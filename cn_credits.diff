@@ -147,7 +147,7 @@ index 4bf8cc2f0..611007df9 100644
 @@ -26,6 +26,19 @@ InitGender:
  	call LoadGenderScreenLightBlueTile
  	call WaitBGMap2
- 	call SetPalettes
+ 	call SetDefaultBGPAndOBP
 +	ldh a, [hJoyDown]
 +	and SELECT | START
 +	cp SELECT | START
