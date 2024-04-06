@@ -20,8 +20,7 @@ sudo apt install git libpng-dev gcc bison pkg-config rsync python3-pip
 sudo pip3 install openpyxl
 ```
 
-纯Windows编译环境理论上可行，但是还未完全实施，目前不提供。
-
+纯Windows编译环境初步提供。
 
 ## 下载
 
@@ -48,21 +47,40 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
     - 将代码和文本合并编译的位置。ROM也将在这个路径中输出。
 - `env-setup`
     - 环境初始化脚本
+- `env-setup-win`
+    - 环境初始化脚本(Windows 10 1902以上)
 - `text.xlsx`
     - 游戏主文本。需要通过导入才能编译进ROM。
 
 
-## 编译方法
+## 编译前置
 
-在项目根目录（当前目录），执行如下命令
+### Windows的编译前置与启动
+
+下载 `rgbds-ws` 的编译输出工程。
+
+然后将下载的当前目录放到 `rgbds-ws` 的 `/home` 目录中。
+
+之后每次启动，打开 `rgbds-ws` 的 `Run.bat` 后，依次执行如下命令
+
+```
+cd pokecrystal_cn_build
+source ./env-setup-win
+```
+
+### Linux的编译前置
+
+每次在项目根目录（当前目录），执行如下命令
 
 ```
 source env-setup
 ```
 
-命令将自动编译 `rgbds` 工具链，并加入当前环境变量中。
+如果 `rgbds` 尚未安装，将尝试自动编译 `rgbds` 工具链，并加入当前环境变量中。
 
-之后，按顺序执行
+## 编译方法
+
+根据不同系统配置前置之后，按顺序执行
 
 ```
 pmc_isys

@@ -14,7 +14,7 @@ then
         }
     }
 
-    if which rgbasm 2>/dev/null
+    if which rgbasm >/dev/null
     then
         rgbasm -V
         echo 'if rgbasm < v0.6.0, run "rgbds_build" instead'
