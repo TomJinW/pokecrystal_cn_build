@@ -47,7 +47,7 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
     - 将代码和文本合并编译的位置。ROM也将在这个路径中输出。
 - `env-setup`
     - 环境初始化脚本
-- `env-setup-win`
+- `env-setup-win32`
     - 环境初始化脚本(Windows 10 1902以上)
 - `text.xlsx`
     - 游戏主文本。需要通过导入才能编译进ROM。
@@ -65,7 +65,7 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
 
 ```
 cd pokecrystal_cn_build
-source ./env-setup-win
+source ./env-setup-win32
 ```
 
 ### Linux的编译前置
