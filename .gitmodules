@@ -3,4 +3,4 @@
 	url = https://github.com/SnDream/pokecrystal_cn.git
 [submodule "rgbds"]
 	path = rgbds
-	url = https://github.com/SnDream/rgbds.git
+	url = https://github.com/gbdev/rgbds.git

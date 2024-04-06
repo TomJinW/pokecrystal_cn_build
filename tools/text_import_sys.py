@@ -15,7 +15,7 @@ def import_pokemon():
         file = f.readlines()
     file_opt = []
     for line in file:
-        if 'db "' in line:
+        if 'db_w "' in line:
             name = ws.cell(row = wbi, column = 4).value
             wbi += 1
             name_len = len(name.encode(encoding = 'gb2312'))
@@ -36,7 +36,7 @@ def import_trainer():
         file = f.readlines()
     file_opt = []
     for line in file:
-        if 'db "' in line and line[0] != ';':
+        if 'db_w "' in line and line[0] != ';':
             name = ws.cell(row = wbi, column = 4).value
             wbi += 1
             line_sp = line.split('"')
@@ -74,7 +74,7 @@ def import_map():
         file = f.readlines()
     file_opt = []
     for line in file:
-        if 'db "' in line:
+        if 'db_w "' in line:
             name = ws.cell(row = wbi, column = 4).value
             wbi += 1
             line_sp = line.split('"')
@@ -145,7 +145,7 @@ def import_dex():
         if len(line1) > 12 : print(line1)
         if len(line2) > 12 : print(line2)
         if len(line3) > 12 : print(line3)
-        file_opt[3] = '\tdb   "' + line1 + '"\n'
+        file_opt[3] = '\tdb_w "' + line1 + '"\n'
         file_opt[4] = '\tnext "' + line2 + '"\n'
         file_opt[5] = '\tnext "' + line3 + '@"\n'
         with open('./pokecrystal_cn/data/pokemon/dex_entries/' + filename + '.asm', 'w') as f:

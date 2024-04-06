@@ -39,7 +39,9 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
 - `pokecrystal_cn` 目录
     - 代码仓库。里面包含原始代码、汉化代码、系统使用的文本翻译。游戏主文本不包含在内。
 - `rgbds` 目录
-    - 工具链仓库。里面包含一个修改版本的 `rgbds` ，用于支持中文文本的编译。
+    - ~~工具链仓库。里面包含一个修改版本的 `rgbds` ，用于支持中文文本的编译。~~
+    - 工具链仓库。目前使用上游原生的 `rgbds` 。如果监测到环境已安装 `rgbds` 则不再编译。
+    - 可以用 `rgbds_build` 手动编译，编译后会自动加入编译环境。
 - `tools` 目录
     - 文本导入的程序。
 - `build` 目录

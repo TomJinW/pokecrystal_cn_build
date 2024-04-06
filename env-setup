@@ -2,13 +2,26 @@
 
 if [ ${0##*/} != 'env-setup' ]
 then
-    echo "Build rgbds..."
-    make -C rgbds
     export BUILD_ROOT=$(realpath .)
-    [ -z "${PATH_EXPORTED}" ] && {
-        export PATH="$(realpath rgbds):${PATH}"
-        PATH_EXPORTED=y
+
+    rgbds_build() {
+        cd "${BUILD_ROOT}" &&
+        echo "Build rgbds..." &&
+        make -C rgbds &&
+        [ -z "${PATH_EXPORTED}" ] && {
+            export PATH="$(realpath rgbds):${PATH}"
+            PATH_EXPORTED=y
+        }
     }
+
+    if which rgbasm 2>/dev/null
+    then
+        rgbasm -V
+        echo 'if rgbasm < v0.6.0, run "rgbds_build" instead'
+    else
+        rgbds_build
+    fi
+
     pmc_init() {
         cd "${BUILD_ROOT}" &&
         mkdir -p build &&
