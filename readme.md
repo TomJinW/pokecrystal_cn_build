@@ -51,7 +51,8 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
     - 环境初始化脚本(Windows 10 1902以上)
 - `text.xlsx`
     - 游戏主文本。需要通过导入才能编译进ROM。
-
+- `ya_getopt`
+    - 为 Windows 下的编译提供缺少的函数
 
 ## 编译前置
 
