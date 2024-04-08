@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ${0##*/} != 'env-setup' ]
+if [ ${0##*/} != 'env-setup-win32' ]
 then
     export BUILD_ROOT=$(realpath .)
 
