@@ -25,6 +25,49 @@ class textblock:
         self.ctrl = []
         self.asm = ''
 
+def printtb(cnlist, jplist, enlist):
+    print("\n".join(["---CN---"] + cnlist))
+    print("\n".join(["---JP---"] + jplist))
+    print("\n".join(["---EN---"] + enlist))
+    print("---==---")
+
+ex_hint_dict = {}
+with open('./tools/text_import_text_ex_hint.txt') as f:
+    for line in f:
+        olabel, hint = line.strip('\n').split('\t')[:2]
+        if olabel not in ex_hint_dict:
+            ex_hint_dict[olabel] = []
+        ex_hint_dict[olabel].append(hint)
+
+ex_munt_dict = {}
+with open('./tools/text_import_text_ex_munt.txt') as f:
+    for line in f:
+        olabel = line.strip('\n').split('\t')[0]
+        ex_munt_dict[olabel] = True
+
+ex_sunt_dict = {}
+with open('./tools/text_import_text_ex_sunt.txt') as f:
+    for line in f:
+        olabel = line.strip('\n').split('\t')[0]
+        ex_sunt_dict[olabel] = True
+
+ex_epar_dict = {}
+with open('./tools/text_import_text_ex_epar.txt') as f:
+    for line in f:
+        olabel = line.strip('\n').split('\t')[0]
+        ex_epar_dict[olabel] = True
+
+ex_ctch_dict = {}
+with open('./tools/text_import_text_ex_ctch.txt') as f:
+    for line in f:
+        olabel = line.strip('\n').split('\t')[0]
+        ex_ctch_dict[olabel] = True
+
+ex_left_dict = {}
+with open('./tools/text_import_text_ex_left.txt') as f:
+    for line in f:
+        olabel = line.strip('\n').split('\t')[0]
+        ex_left_dict[olabel] = True
 
 def get_textdata():
     ws = wb['标']
@@ -75,8 +118,9 @@ def get_textdata():
                         jplist.pop()
                         jplist_end_cnt += 1
                     while len(cnlist) > 0 and cnlist[-1] == '': cnlist.pop()
-                    if enlist_end_cnt > 2 and jplist_end_cnt > 2:
-                        print('END WITH EMPTY PARA FOUND! ', olabel)
+                    if enlist_end_cnt > 2 and jplist_end_cnt > 2 and olabel not in ex_epar_dict:
+                        print(olabel, 'END WITH EMPTY PARA FOUND!')
+                        printtb(cnlist, jplist, enlist)
                     if len(ctrl) > 0 and ctrl[0] == 'LINE_CR':
                         tb_dict[olabel].next_CR = True
                         ctrl.pop(0)
@@ -111,6 +155,10 @@ def get_textdata():
                                 hintpass = True
                                 break
                         if hintpass : continue
+                        if olabel in ex_hint_dict:
+                            if hinttoken in ex_hint_dict[olabel]:
+                                hintpass = True
+                                continue
                         print(olabel + ' HINT LOSS : ' + hinttoken)
                         print(''.join(cnlist))
                         
@@ -144,15 +192,15 @@ def get_textdata():
                 enlist.append(cen)
                 jplist.append(cjp)
                 cnlist.append(ccn)
-                if cjp != '' and cjp == ccn:
-                    print('MAYBE UNTRANSLATE', cjp, olabel)
+                if cjp != '' and cjp == ccn and olabel not in ex_munt_dict:
+                    print(olabel, 'MAYBE UNTRANSLATE:', cjp)
                 if cht != '' :
                     for chttoken in cht.split(' '):
                         hint.append(chttoken.split(':')[1])
                 if ccm != '' : comment.append(ccm)
                 if ctr != '' : ctrl.append(ctr)
                 if ctr == '…' :
-                    print('WARN', olabel)
+                    print(olabel, 'WARN')
     return tb_dict
         
 
@@ -179,81 +227,12 @@ with open('./tools/text_import_text_odctrl.txt') as f:
         od, fkname = line.strip('\n').split('\t')
         oddict[od] = fkname
 
-spoddict['monster_m03']    = {'text_ram wEnemyMonNickname':  '赫拉克罗斯'}
-spoddict['nigeta_m01']     = {'text_ram wEnemyMonNickname':  '代欧奇希斯'}
-spoddict['torikaeru_m01']  = {'text_ram wEnemyMonNickname':  '精灵宝可梦'}
-spoddict['nige_ok_m02']    = {'text_ram wStringBuffer1': '烟雾球'}
-spoddict['koreijou_m01']    = {'text_ram wStringBuffer2': '命中率'}
-spoddict['koreijou_m02']    = {'text_ram wStringBuffer2': '闪避率'}
-spoddict['msg_giveitem_01_common'] = {'text_ram wStringBuffer3': '10'}
-spoddict['TradeEndMSG_001_Eventsub'] = {'text_ram wMonOrItemNameBuffer': '美佐子', 'text_ram wStringBuffer2': '三合一磁怪'}
-spoddict['msg2_4_012_Eventsub'] = {'text_ram wMonOrItemNameBuffer': '三合一磁怪', 'text_ram wStringBuffer2': '三合一磁怪'}
-spoddict['msg3_0_013_Eventsub'] = {'text_ram wMonOrItemNameBuffer': '三合一磁怪', 'text_ram wStringBuffer2': '三合一磁怪'}
-spoddict['msg3_3_016_Eventsub'] = {'text_ram wMonOrItemNameBuffer': '三合一磁怪', 'text_ram wStringBuffer2': '三合一磁怪'}
-spoddict['msg3_4_017_Eventsub'] = {'text_ram wMonOrItemNameBuffer': '三合一磁怪', 'text_ram wStringBuffer2': '三合一磁怪'}
-spoddict['BreederExpMSG_049_Eventsub'] = {'text_decimal hMoneyTemp, 3, 6': '9900'}
-spoddict['msg_oldman_05_r25r0101'] = {'text_ram wStringBuffer3': '走路草'}
-spoddict['msg1_2_070_Eventsub'] = {'text_ram wStringBuffer1': 'NEWPKMNAME'}
-spoddict['msg1_9_077_Eventsub'] = {'text_ram wStringBuffer1': 'NEWPKMNAME'}
-spoddict['msg_017_Monstool'] = {'text_ram wStringBuffer1': '999.9'}
-spoddict['msg_zukan_10_1_018_Net_pc'] = {'text_ram wStringBuffer3': '251', 'text_ram wStringBuffer4': '251'}
-spoddict['msg_telgirl01_type02_01_d22r0101'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_02_d22r0101'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_03_d22r0101'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_01_r27'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_02_r27'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_03_r27'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_d22r0101'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_d22r0101'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_d22r0101'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_mobile_battleroom_next'] = {'text_ram wStringBuffer3': '7'}
-spoddict['msg_telgirl01_type02_01_r32'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_02_r32'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_03_r32'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_01_r26'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_02_r26'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_03_r26'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r32'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r32'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r32'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r36'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r36'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r36'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_vending_02_t07r0106'] = {'text_ram wStringBuffer3': '才四个字'}
-spoddict['msg_telboy01_type02_01_r44'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r44'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r44'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r38'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r38'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r38'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_vending_02_t25r1006'] = {'text_ram wStringBuffer3': '才四个字'}
-spoddict['msg_telgirl01_type02_02_r34'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type04_01_r46'] = {'text_ram wStringBuffer3': '三个字'}
-# spoddict['BattleText_EnemyFled'] = {'text_ram wStringBuffer3': 'PKMONSE'}
-spoddict['msg_telboy01_type02_01_r39'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r39'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r39'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r35'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r35'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r26'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r26'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r26'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type20_01_r30'] = {'text_ram wStringBuffer4': '小拉达'} # 它最长的PM名字，另一个是拉达
-spoddict['msg_telboy01_type01_01_r33'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type01_02_r33'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type01_03_r33'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telgirl01_type02_02_r46'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r31'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r31'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r31'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_d27r0102'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_d27r0102'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r43'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r43'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r43'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_01_r30'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_02_r30'] = {'text_ram wStringBuffer3': '三个字'}
-spoddict['msg_telboy01_type02_03_r30'] = {'text_ram wStringBuffer3': '三个字'}
+with open('./tools/text_import_text_spodctrl.txt') as f:
+    for line in f:
+        olabel, od, odtext = line.strip('\n').split('\t')[:3]
+        if olabel not in spoddict:
+            spoddict[olabel] = {}
+        spoddict[olabel][od] = odtext
 
 def length_check(tb):
     for line in tb.cnlist:
@@ -269,7 +248,8 @@ def length_check(tb):
         line = line.replace('<RIVAL>',  'RIVALNM')
         line = line.replace('<USER>', '敌人的ABCDEFG')
         line = line.replace('<TARGET>', '敌人的ABCDEFG')
-        line = line.replace('<ENEMY>', '宝可梦训练家 CARINEY')
+        # line = line.replace('<ENEMY>', '宝可梦训练家 CARINEY')
+        line = line.replace('<ENEMY>', '宝可梦训练家CARINEY')
         line = line.replace('<SCROLL>', '')
         line = line.replace('\'s', 'S')
         for i, od in enumerate(tb.ctrl):
@@ -286,7 +266,10 @@ def length_check(tb):
         cnr = False
         for char in line:
             try:
-                clen = len(char.encode(encoding='GB2312'))
+                if char == '啰':
+                    clen = 2
+                else:
+                    clen = len(char.encode(encoding='GB2312'))
             except:
                 print(char, 'is not suppport', line, tb.dlabel)
                 clen = 1
@@ -302,7 +285,13 @@ def length_check(tb):
                 length += 1
                 cnr = False
         if length > 18 + length_more:
-            print(length, tb.olabel, tb.dlabel, line)
+            print("OVERF", length, tb.olabel, tb.dlabel, line)
+            for od in tb.ctrl:
+                if tb.olabel in spoddict and od in spoddict[tb.olabel]:
+                    odtext = spoddict[tb.olabel][od]
+                else:
+                    odtext = oddict[od]
+                print("ODTEXT\t" + tb.olabel + "\t" + od + "\t" + odtext)
 
 def make_asm(tb):
     # asm_mk = tb.dlabel + ':\n'
@@ -364,9 +353,12 @@ def make_asm(tb):
             if 'para' in line or 'line' in line or 'cont' in line:
                 pass
             elif 'done' in line or 'prompt' in line or 'text_end' in line:
-                print('CATCH-', line, tb.olabel)
+                if tb.olabel not in ex_ctch_dict:
+                    print('CATCH-', line, tb.olabel)
+                    printtb(tb.cnlist, tb.jplist, tb.enlist)
             else:
                 print('ERROR-', line, tb.olabel)
+                printtb(tb.cnlist, tb.jplist, tb.enlist)
             tst = False
     if asm_mk == '\tdone\n\n':
         asm_mk = '\ttext_start\n' + asm_mk
@@ -400,6 +392,7 @@ def replace_asm(asmfile_list, asmn):
     opt_list = []
     state = 0
     extra_end = False
+    strip_au = 0
     for line in asmfile_list:
         line_strip = line[:line.find(';')].strip()
         if len(line_strip) > 0:
@@ -420,8 +413,9 @@ def replace_asm(asmfile_list, asmn):
                         trans = False
                         for i in range(len(tb.jplist)):
                             if tb.jplist[i] != tb.cnlist[i]: trans = True
-                        if trans == False:
-                            print('UNTRANS TEXT? ', label, tb.cnlist)
+                        if trans == False and tb.olabel not in ex_sunt_dict:
+                            print('UNTRANS TEXT?', tb.olabel)
+                            printtb(tb.cnlist, tb.jplist, tb.enlist)
                             trans = True
                     if trans: state = 1
                     else: state = 0
@@ -432,8 +426,16 @@ def replace_asm(asmfile_list, asmn):
                 if line[0] == '\t':
                     line = '\t; ' + line[1:]
                 else:
+                    if strip_au == 0 and line.strip() == 'if DEF(_CRYSTAL_AU)':
+                        strip_au = 1
+                    elif strip_au == 1 and line.strip() == 'else':
+                        strip_au = 2
+                    elif strip_au == 2 and line.strip() == 'endc':
+                        strip_au = 0
+                    else:
+                        strip_au = 0
+                        print("UNKSRC", line.strip())
                     line = '; ' + line
-                    print(line)
         opt_list.append(line)
     if state == 1:
         opt_list.append(tb.asm)
@@ -453,6 +455,6 @@ for asmn in asmfile_data:
 
 # print(label_found)
 for label in tb_dict:
-    if tb_dict[label].dlabel not in label_found:
+    if tb_dict[label].dlabel not in label_found and label not in ex_left_dict:
         # pass
         print('LABEL LEFT', 'D[ ', tb_dict[label].dlabel, ' ] O[ ', label,' ]')
