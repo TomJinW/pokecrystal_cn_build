@@ -4,8 +4,36 @@ from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl import load_workbook
 import subprocess
+import sys
+version = 'CR'
+path = './'
+path2 = ''
 
-wb = load_workbook('./text.xlsx', data_only=True)
+if len(sys.argv) > 1:
+    version = sys.argv[1]
+
+if version == 'CR':
+    path = './pokecrystal_cn/'
+else:
+    path2 = 'xlsx/'
+
+wb = load_workbook(path2+'text.xlsx', data_only=True)
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    
+def RN(text):
+    if text == None:
+        return ''
+    return text
 
 class textblock:
     def __init__(self):
@@ -24,6 +52,7 @@ class textblock:
         self.comment = []
         self.ctrl = []
         self.asm = ''
+        self.version = ''
 
 def printtb(cnlist, jplist, enlist):
     print("\n".join(["---CN---"] + cnlist))
@@ -32,7 +61,7 @@ def printtb(cnlist, jplist, enlist):
     print("---==---")
 
 ex_hint_dict = {}
-with open('./tools/text_import_text_ex_hint.txt') as f:
+with open('./tools/text_import_text_ex_hint.txt',encoding='utf-8') as f:
     for line in f:
         olabel, hint = line.strip('\n').split('\t')[:2]
         if olabel not in ex_hint_dict:
@@ -40,31 +69,31 @@ with open('./tools/text_import_text_ex_hint.txt') as f:
         ex_hint_dict[olabel].append(hint)
 
 ex_munt_dict = {}
-with open('./tools/text_import_text_ex_munt.txt') as f:
+with open('./tools/text_import_text_ex_munt.txt',encoding='utf-8') as f:
     for line in f:
         olabel = line.strip('\n').split('\t')[0]
         ex_munt_dict[olabel] = True
 
 ex_sunt_dict = {}
-with open('./tools/text_import_text_ex_sunt.txt') as f:
+with open('./tools/text_import_text_ex_sunt.txt',encoding='utf-8') as f:
     for line in f:
         olabel = line.strip('\n').split('\t')[0]
         ex_sunt_dict[olabel] = True
 
 ex_epar_dict = {}
-with open('./tools/text_import_text_ex_epar.txt') as f:
+with open('./tools/text_import_text_ex_epar.txt',encoding='utf-8') as f:
     for line in f:
         olabel = line.strip('\n').split('\t')[0]
         ex_epar_dict[olabel] = True
 
 ex_ctch_dict = {}
-with open('./tools/text_import_text_ex_ctch.txt') as f:
+with open('./tools/text_import_text_ex_ctch.txt',encoding='utf-8') as f:
     for line in f:
         olabel = line.strip('\n').split('\t')[0]
         ex_ctch_dict[olabel] = True
 
 ex_left_dict = {}
-with open('./tools/text_import_text_ex_left.txt') as f:
+with open('./tools/text_import_text_ex_left.txt',encoding='utf-8') as f:
     for line in f:
         olabel = line.strip('\n').split('\t')[0]
         ex_left_dict[olabel] = True
@@ -72,7 +101,9 @@ with open('./tools/text_import_text_ex_left.txt') as f:
 def get_textdata():
     ws = wb['标']
     tb_dict = dict()
+    tb_dict_version_not_matched = dict()
     for wbi in range(2, ws.max_row):
+        currentVer = RN(ws.cell(row = wbi, column = 9).value).strip()
         tb = textblock()
         if ws.cell(row = wbi, column = 1).value is not None:
             tb.dmap = ws.cell(row = wbi, column = 1).value
@@ -84,8 +115,16 @@ def get_textdata():
         tb.ofname = ws.cell(row = wbi, column = 5).value
         tb.oeomjp = ws.cell(row = wbi, column = 6).value
         tb.oeomen = ws.cell(row = wbi, column = 7).value
-        tb_dict[tb.olabel] = tb
-    for i in range(9):
+        tb.version = currentVer
+        if currentVer == '' or currentVer == version:
+            tb_dict[tb.olabel] = tb
+        else:
+            tb_dict_version_not_matched[tb.olabel] = tb
+
+    sheetRange = 9
+    if version != "CR":
+        sheetRange = 10
+    for i in range(sheetRange):
         ws = wb['文' + str(i + 1)]
         enlist = []
         jplist = []
@@ -94,6 +133,7 @@ def get_textdata():
         comment = []
         ctrl = []
         olabel = ''
+        lastVer = ''
         for wbi in range(1, ws.max_row + 1):
             cen = ws.cell(row = wbi, column = 1).value
             if cen is None: cen = ''
@@ -107,8 +147,35 @@ def get_textdata():
             if ccm is None: ccm = ''
             ctr = ws.cell(row = wbi, column = 10).value
             if ctr is None: ctr = ''
+            ver = ws.cell(row = wbi, column = 11).value
+            if ver is None: ver = ''
             if '英文' in cen or '结束' in cen:
                 if olabel != '':
+                    if olabel in tb_dict_version_not_matched and not olabel in tb_dict:
+                        print(f'olabel {olabel} 的版本不匹配 {tb_dict_version_not_matched[olabel].version} {version}')
+                        olabel = ctr
+                        lastVer = ver
+                        enlist = []
+                        jplist = []
+                        cnlist = []
+                        hint = []
+                        comment = []
+                        ctrl = []
+                        continue
+                    if lastVer != '' and lastVer != version:
+                        print('L2: 当前文本版本不匹配，ignoring...')
+                        print(olabel)
+                        # print(ctr)
+                        olabel = ctr
+                        lastVer = ver
+                        enlist = []
+                        jplist = []
+                        cnlist = []
+                        hint = []
+                        comment = []
+                        ctrl = []
+                        continue
+
                     enlist_end_cnt = 0
                     jplist_end_cnt = 0
                     while len(enlist) > 0 and enlist[-1] == '': 
@@ -182,6 +249,7 @@ def get_textdata():
 
                 if '英文' in cen:
                     olabel = ctr
+                    lastVer = ver
                     enlist = []
                     jplist = []
                     cnlist = []
@@ -209,25 +277,36 @@ def get_asmfile_set():
     ws = wb['标']
     asmfile_set = set()
     for wbi in range(2, ws.max_row):
+        currentVer = RN(ws.cell(row = wbi, column = 9).value).strip()
         if ws.cell(row = wbi, column = 1).value is not None:
-            asmfile_set.add(ws.cell(row = wbi, column = 1).value)
+            if currentVer == '' or currentVer == version:
+                asmfile_set.add(ws.cell(row = wbi, column = 1).value)
+            # else:
+            #     print('L3: 当前版本不匹配，ignoring...')
+            #     print(currentVer)
+            #     print(version)
+            #     print(RN(ws.cell(row = wbi, column = 1).value))
     return asmfile_set
 
 def get_asmfile_data():
     asmfile_data = dict()
     for asmfile_name in get_asmfile_set():
-        with open('./pokecrystal_cn/' + asmfile_name) as f:
-            asmfile_data[asmfile_name] = f.readlines()
+        try:
+            with open(path + asmfile_name,encoding='utf-8') as f:
+                asmfile_data[asmfile_name] = f.readlines()
+        except:
+            print(f'ignoring {asmfile_name}')
     return asmfile_data
+
 
 oddict = {}
 spoddict = {}
-with open('./tools/text_import_text_odctrl.txt') as f:
+with open('./tools/text_import_text_odctrl.txt',encoding='utf-8') as f:
     for line in f:
         od, fkname = line.strip('\n').split('\t')
         oddict[od] = fkname
 
-with open('./tools/text_import_text_spodctrl.txt') as f:
+with open('./tools/text_import_text_spodctrl.txt',encoding='utf-8') as f:
     for line in f:
         olabel, od, odtext = line.strip('\n').split('\t')[:3]
         if olabel not in spoddict:
@@ -440,7 +519,7 @@ def replace_asm(asmfile_list, asmn):
     if state == 1:
         opt_list.append(tb.asm)
     # print(''.join(opt_list))
-    with open('./build/' + asmn, 'w') as f:
+    with open(path + asmn, 'w',encoding='utf-8') as f:
         f.writelines(opt_list)
     return label_found_asm
 
@@ -449,6 +528,7 @@ label_found = set()
 asmfile_data = get_asmfile_data()
 tb_dict = get_textdata()
 tb_asm_dict = get_textasm(tb_dict)
+
 for asmn in asmfile_data:
     asmfile = asmfile_data[asmn]
     label_found = label_found.union(replace_asm(asmfile, asmn))
