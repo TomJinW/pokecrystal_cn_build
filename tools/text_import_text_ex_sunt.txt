@@ -11,6 +11,5 @@ msg_middlem_w_10_t25
 BattleCannotEntry_010_Itemmain
 message_004_Kougeki
 message_011_Kougeki
-direct_msg_020_Kougeki
 dummyMSG_001_Kozukuri
 msg_open2_after_002_Play1

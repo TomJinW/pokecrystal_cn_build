@@ -27,7 +27,7 @@ sudo pip3 install openpyxl
 由于使用submodule，需要使用
 
 ```
-git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
+git clone https://github.com/SnDream/pokecrystalCHS_build.git --recursive
 ```
 
 下载仓库。
@@ -35,7 +35,7 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
 
 ## 工程结构
 
-- `pokecrystal_cn` 目录
+- `pokecrystalCHS` 目录
     - 代码仓库。里面包含原始代码、汉化代码、系统使用的文本翻译。游戏主文本不包含在内。
 - `rgbds` 目录
     - ~~工具链仓库。里面包含一个修改版本的 `rgbds` ，用于支持中文文本的编译。~~
@@ -65,7 +65,7 @@ git clone https://github.com/SnDream/pokecrystal_cn_build.git --recursive
 之后每次启动，打开 `rgbds-ws` 的 `Run.bat` 后，依次执行如下命令
 
 ```
-cd pokecrystal_cn_build
+cd pokecrystalCHS_build
 source ./env-setup-win32
 ```
 
@@ -96,24 +96,24 @@ pmc_build
 
 ### 代码快速同步
 
-执行 `pmc_init` 进行代码同步。将 `pokecrystal_cn` 中的代码更改同步到 `build` 中。
+执行 `pmc_init` 进行代码同步。将 `pokecrystalCHS` 中的代码更改同步到 `build` 中。
 
 - 如果有导入过文本，内容将被删除，请重新导入文本。
 - 不会删除 `build` 目录中为了编译生成的中间文件。
 
 ### 代码完整同步
 
-执行 `pmc_finit` 进行完整代码同步。将 `pokecrystal_cn` 中的代码更改同步到 `build` 中。
+执行 `pmc_finit` 进行完整代码同步。将 `pokecrystalCHS` 中的代码更改同步到 `build` 中。
 
 - 与 `pmc_init` 的区别在于 `build` 目录中为了编译生成的中间文件也会被删除。
-    - 相当于将 `build` 还原为和 `pokecrystal_cn` 完全一致的状态。
+    - 相当于将 `build` 还原为和 `pokecrystalCHS` 完全一致的状态。
 - 如果有导入过文本，内容将被删除，请重新导入文本。
 
 ### 系统文本导入
 
 执行 `pmc_isys` 导入系统文本。
 
-- 导入的目标是原始的 `pokecrystal_cn` 目录，而不是 `build` 目录。
+- 导入的目标是原始的 `pokecrystalCHS` 目录，而不是 `build` 目录。
 
 ### 系统文本导入
 

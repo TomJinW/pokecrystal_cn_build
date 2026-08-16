@@ -17,14 +17,14 @@ then
         pmc_init() {
             cd "${BUILD_ROOT}" &&
             mkdir -p build &&
-            { robocopy pokecrystal_cn build /e /xd .git ; [ $? -lt 8 ] ; } &&
+            { robocopy pokecrystalCHS build /e /xd .git ; [ $? -lt 8 ] ; } &&
             cp -af ya_getopt/ya_getopt.* build/tools/ &&
             (cd build && patch -p1 < ../tcc_winport.diff)
         }
         pmc_finit() {
             cd "${BUILD_ROOT}" &&
             mkdir -p build &&
-            { robocopy pokecrystal_cn build /e /mir /xd .git ; [ $? -lt 8 ] ; } &&
+            { robocopy pokecrystalCHS build /e /mir /xd .git ; [ $? -lt 8 ] ; } &&
             cp -af ya_getopt/ya_getopt.* build/tools/ &&
             (cd build && patch -p1 < ../tcc_winport.diff)
         }
@@ -33,7 +33,7 @@ then
         pmc_init() {
             cd "${BUILD_ROOT}" &&
             mkdir -p build &&
-            cp -af pokecrystal_cn/* build/ &&
+            cp -af pokecrystalCHS/* build/ &&
             cp -af ya_getopt/ya_getopt.* build/tools/ &&
             (cd build && patch -p1 < ../tcc_winport.diff)
         }
@@ -41,7 +41,7 @@ then
             cd "${BUILD_ROOT}" &&
             mkdir -p build &&
             rm -rf build/* &&
-            cp -af pokecrystal_cn/* build/ &&
+            cp -af pokecrystalCHS/* build/ &&
             cp -af ya_getopt/ya_getopt.* build/tools/ &&
             (cd build && patch -p1 < ../tcc_winport.diff)
         }

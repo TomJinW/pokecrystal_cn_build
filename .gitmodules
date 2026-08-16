@@ -7,3 +7,9 @@
 [submodule "ya_getopt"]
 	path = ya_getopt
 	url = https://github.com/kubo/ya_getopt
+[submodule "pokecrystalCHS"]
+	path = pokecrystalCHS
+	url = https://github.com/TomJinW/pokecrystal_cn
+[submodule "PokeGSC_SharedXLSXCN"]
+	path = PokeGSC_SharedXLSXCN
+	url = https://github.com/TomJinW/PokeGSC_SharedXLSXCN

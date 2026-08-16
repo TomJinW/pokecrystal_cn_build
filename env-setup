@@ -1,7 +1,19 @@
-#!/bin/bash
 
-if [ ${0##*/} != 'env-setup' ]
-then
+is_sourced=0
+
+if [ -n "$ZSH_VERSION" ]; then
+    case $ZSH_EVAL_CONTEXT in
+        *:file) is_sourced=1 ;;
+    esac
+elif [ -n "$BASH_VERSION" ]; then
+    if [ "${BASH_SOURCE[0]}" != "$0" ]; then
+        is_sourced=1
+    fi
+else
+    (return 0 2>/dev/null) && is_sourced=1
+fi
+
+if [ "$is_sourced" = 1 ]; then
     export BUILD_ROOT=$(realpath .)
 
     rgbds_build() {
@@ -25,12 +37,12 @@ then
     pmc_init() {
         cd "${BUILD_ROOT}" &&
         mkdir -p build &&
-        rsync -avz --exclude=".git" pokecrystal_cn/ build/
+        rsync -avz --exclude=".git" pokecrystalCHS/ build/
     }
     pmc_finit() {
         cd "${BUILD_ROOT}" &&
         mkdir -p build &&
-        rsync -avz --delete --delete-excluded --exclude=".git" pokecrystal_cn/ build/
+        rsync -avz --delete --delete-excluded --exclude=".git" pokecrystalCHS/ build/
     }
     pmc_itext() {
         cd "${BUILD_ROOT}" &&
@@ -44,7 +56,8 @@ then
     pmc_build() {
         cd "${BUILD_ROOT}" &&
         make -C build crystal11 &&
-        make -C build crystal11_debug
+        make -C build crystal11_debug &&
+        make -C build crystal11_vc
     }
 
     echo "************************"
