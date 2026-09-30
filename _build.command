@@ -3,7 +3,7 @@
 filepath=$(cd "$(dirname "$0")"; pwd)
 cd "$filepath"
 
-source env-setup
+source env-setup || exit 1
 pmc_finit
 pmc_itext
 pmc_isys

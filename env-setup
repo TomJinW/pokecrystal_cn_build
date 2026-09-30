@@ -26,12 +26,13 @@ if [ "$is_sourced" = 1 ]; then
         }
     }
 
-    if which rgbasm >/dev/null
+    if command -v rgbasm >/dev/null
     then
         rgbasm -V
-        echo 'if rgbasm < v0.6.0, run "rgbds_build" instead'
+        echo 'This project is tested with RGBDS 1.0.4.'
     else
-        rgbds_build
+        echo 'Please install RGBDS 1.0.4 before building.' >&2
+        return 1
     fi
 
     pmc_init() {
