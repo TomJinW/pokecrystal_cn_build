@@ -58,7 +58,8 @@ if [ "$is_sourced" = 1 ]; then
         cd "${BUILD_ROOT}" &&
         make -C build crystal11 &&
         make -C build crystal11_debug &&
-        make -C build crystal11_vc
+        make -C build crystal11_vc &&
+        python3 tools/vc_slowdown.py build pokecrystal11
     }
 
     echo "************************"
